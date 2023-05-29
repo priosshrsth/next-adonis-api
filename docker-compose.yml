@@ -1,0 +1,33 @@
+version: "3.8"
+
+services:
+  api.next.pv:
+    restart: always
+    entrypoint: /bin/sh
+    image: api.next.pv
+    build:
+      context: .
+      target: base
+    container_name: api.next.pv
+    ports:
+      - '3333:3333'
+    expose:
+      - 3333
+    env_file:
+      - .env
+    command: -c 'pnpm install && pnpm run dev'
+    environment:
+      NODE_ENV: development
+      VIRTUAL_PORT: 3333
+      VIRTUAL_HOST: api.next.pv
+    volumes:
+      - .:/home/node/app
+      - ./package.json:/home/node/app/package.json
+      - ./pnpm-lock.yaml:/home/node/app/pnpm-lock.yaml
+    networks:
+      - pagevamp
+
+
+networks:
+  pagevamp:
+    external: true
